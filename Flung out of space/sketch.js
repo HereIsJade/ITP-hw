@@ -22,14 +22,22 @@ function draw() {
   for(var i=0;i<pts.length;i++){
     pts[i].update();
     pts[i].display();
+    if(i==2){
+    console.log("pts[2].vel="+pts[2].vel);
+      console.log("pts[2].acc="+pts[2].acc);
+    }
+    // console.log("pts "+i+".vel="+pts[i].vel);
   }
   
   for (var i=pts.length-1; i>-1; i--) {
     if (pts[i].dead) {
       pts.splice(i,1);
+      if(i==2){
+        console.log("pts[2] is dead.");
+      }
     }
   }
-  
+  //console.log("pts[2].vel="+pts[2].vel);
 }
 
 function keyPressed(){
@@ -55,8 +63,8 @@ function Particle(x, y, xOffset, yOffset){
   this.loc = new createVector(x,y);
   var randDegrees = random(360);
   this.vel = new createVector(cos(radians(randDegrees)), sin(radians(randDegrees)));
-  this.vel.mult(random(2));//may be modified to a fixed val
-
+  this.vel.mult(random(-2,0));//vel negative
+	//console.log("pts.vel="+this.vel);
   this.acc = new createVector(0,0);
   
   if(y<(height/2+formSize/4) && x>(width/2-formSize/4)){
@@ -68,6 +76,7 @@ function Particle(x, y, xOffset, yOffset){
   else{
     this.lifeSpan = random(0, 20);// may be noise
   }
+
 
   this.decay = random(0.55, 0.65);
 
@@ -84,11 +93,15 @@ function Particle(x, y, xOffset, yOffset){
     this.alpha = (this.lifeSpan-this.passedLife)/this.lifeSpan * 70+50;
     this.acc.set(0,0);
 
-    var rn = (noise((this.loc.x+frameCount+this.xOffset)*0.01, (this.loc.y+frameCount+this.yOffset)*0.01)-0.5)*1.5*PI;
+    var rn = (noise((this.loc.x+frameCount+this.xOffset)*0.02, (this.loc.y+frameCount+this.yOffset)*0.02)-0.5)*1.5*PI;
+
     var mag = noise((this.loc.y+frameCount)*0.01, (this.loc.x+frameCount)*0.01);
     var dir = createVector(cos(rn),sin(rn));
+    dir.mult(-1);
     this.acc.add(dir);
     this.acc.mult(mag);
+    
+    //this.acc.mult(-1);
 
     this.vel.add(this.acc);
     this.vel.mult(this.decay);
