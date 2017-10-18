@@ -1,1 +1,1 @@
-# NoC-Animation-hw
+# Repo for ITP courses homework
